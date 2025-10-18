@@ -53,14 +53,24 @@ def extended_vigenere_cipher(text, key, mode='encrypt'):
     return result
 
 def get_valid_key():
-    """Prompts the user for a key and validates that it contains letters."""
+    """Prompts the user for a key and validates that it contains at least two different letters."""
     while True:
-        user_key = input("Enter the secret key (the key is case-sensitive, don't use numbers, spaces): ").strip()
+        user_key = input("Enter the secret key (must contain at least two different letters, case-sensitive): ").strip()
         
-        if any(c.isalpha() for c in user_key):
+        # 1. Check if it contains any letters first
+        letters_only_key = sanitize_key(user_key)
+        
+        if not letters_only_key:
+            print("\n ! Invalid key. The key must contain at least one letter.")
+            continue
+            
+        # 2. Check for at least two DIFFERENT letters (case-sensitive)
+        unique_letters = set(letters_only_key)
+        
+        if len(unique_letters) >= 2:
             return user_key
         else:
-            print("\n ! Invalid key. The key must contain at least one letter.")
+            print("\n ! Invalid key. The key must contain at least two *different* letters (e.g., 'ab' or 'aBc', but not 'aaa').")
 
 def get_multiline_input(prompt):
     """Handles multi-line text input until the user presses Enter twice."""
